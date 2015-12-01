@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.intel.iot.ide.remoteJavaIoTApplication">
+<stringAttribute key="com.intel.iotdevkit.launch.config.default" value="SchallundRauch"/>
+<booleanAttribute key="com.intel.iotdk.ide.attachOutputToConsole" value="true"/>
+<booleanAttribute key="com.intel.iotdk.ide.customRemoteDebugPort" value="false"/>
+<stringAttribute key="com.intel.iotdk.ide.remoteDebugPort" value="8000"/>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+<listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="SchallundRauch"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SchallundRauch"/>
+<booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_CONNECTOR_ID" value="org.eclipse.jdt.launching.socketAttachConnector"/>
+</launchConfiguration>
