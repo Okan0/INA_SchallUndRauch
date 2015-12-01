@@ -1,0 +1,14 @@
+package sebastian.connection;
+
+public class I2SConnection {
+	
+	private static final int CLK = ;
+	private static final int RXD = ;
+	private static final int TXD = ;
+	private static final int FS = ;
+	private static final int VDD = ;
+	private static final int GND = ;
+	
+	
+
+}
