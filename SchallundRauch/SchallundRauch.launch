@@ -4,11 +4,18 @@
 <booleanAttribute key="com.intel.iotdk.ide.attachOutputToConsole" value="true"/>
 <booleanAttribute key="com.intel.iotdk.ide.customRemoteDebugPort" value="false"/>
 <stringAttribute key="com.intel.iotdk.ide.remoteDebugPort" value="8000"/>
+<stringAttribute key="org.eclipse.cdt.dsf.gdb.HOST" value="Edison"/>
+<stringAttribute key="org.eclipse.debug.core.REMOTE_TCP" value="Edison"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
+<mapAttribute key="org.eclipse.jdt.launching.CONNECT_MAP">
+<mapEntry key="hostname" value="192.168.2.15"/>
+<mapEntry key="port" value="8000"/>
+<mapEntry key="timeout" value="2000"/>
+</mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="SchallundRauch"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="SchallundRauch"/>
 <booleanAttribute key="org.eclipse.jdt.launching.STOP_IN_MAIN" value="true"/>

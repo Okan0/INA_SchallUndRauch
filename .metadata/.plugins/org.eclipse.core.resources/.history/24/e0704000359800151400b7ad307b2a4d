@@ -1,0 +1,51 @@
+package sebastian.connection;
+
+import mraa.Platform;
+import mraa.Result;
+import mraa.mraa;
+//import upm
+public class I2SConnection {
+	
+	private static final int I2S_CLK = 40; //PIN 52
+	private static final int I2S_RXD = 50; //PIN 50
+	private static final int I2S_TXD = 56; //PIN 56
+	private static final int I2S_FS = 54;  //PIN 54
+	private static final int I2S_VDD = 8; //PIN 8, 10
+	private static final int I2S_GND = 9; //PIN 1,5,9,11,13,15
+	
+	public I2SConnection(){
+		this.init();
+	}
+	
+	public void init(){
+		
+		try {
+			System.loadLibrary("mraajava");
+		} catch (UnsatisfiedLinkError e) {
+			System.err.println("Native code library failed to load. See the chapter on "
+			                    + "Dynamic Linking Problems in the SWIG Java documentation for help.\n" + e);
+		}
+		
+//		Result res = mraa.init();
+//		if (res == Result.SUCCESS){
+//			Platform platform = mraa.getPlatformType();
+			System.out.println(mraa.getPinCount());
+			System.out.println("Initalisiere Schnittstelle " + mraa.getPlatformName() + "...");
+			System.out.println("\t...Clock Pin: " + mraa.getPinName(I2S_CLK));
+			System.out.println("\t...Receive Data Pin: " + mraa.getPinName(I2S_RXD));
+			System.out.println("\t...Transmit Data Pin: " + mraa.getPinName(I2S_TXD));
+			System.out.println("\t...Frequency Select Pin: " + mraa.getPinName(I2S_FS));
+			System.out.println("... finished!");
+//		}
+//		else{
+//			System.out.println("Da lief was schief! " + res.toString());
+//		}
+	}
+	
+	public Byte[] read(){
+		Byte[] input = null;
+		
+		return input;
+	}
+
+}
