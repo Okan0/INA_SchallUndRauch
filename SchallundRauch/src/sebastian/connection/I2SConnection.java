@@ -1,9 +1,11 @@
 package sebastian.connection;
 
-import mraa.Platform;
-import mraa.Result;
+import java.util.Queue;
+
+import mraa.Dir;
+import mraa.Gpio;
+import mraa.Mode;
 import mraa.mraa;
-import mraa.*;
 //import upm
 public class I2SConnection {
 	
@@ -16,6 +18,9 @@ public class I2SConnection {
 	private Gpio I2S_TRANSMIT;
 	private Gpio I2S_FREQUENCY;
 	private Gpio I2S_CLOCK;
+	
+	private static final int BUFFERSIZE_10MSEC = 100;		//Signallength in 10ms
+	private static final int BUFFERSIZE_BYTE = 441 * 3 * BUFFERSIZE_10MSEC;	//Size of Bytearray for inputstream
 	
 	
 	public I2SConnection(){
@@ -48,24 +53,32 @@ public class I2SConnection {
 		this.I2S_CLOCK.dir(Dir.DIR_IN);
 		
 		System.out.println(mraa.getPinCount());
-		System.out.println("Initalisiere Schnittstelle " + mraa.getPlatformName() + "...");
+		System.out.println("Initialize microphone... " + mraa.getPlatformName() + "...");
 		System.out.println("\t...Clock Pin: " + mraa.getPinName(I2S_CLK));
 		System.out.println("\t...Receive Data Pin: " + mraa.getPinName(I2S_RXD));
 		System.out.println("\t...Transmit Data Pin: " + mraa.getPinName(I2S_TXD));
 		System.out.println("\t...Frequency Select Pin: " + mraa.getPinName(I2S_FS));
-		System.out.println("... finished!");
+		System.out.println("... done!");
 	}
 	
-	public Byte[] read(){
+	public void read(){
 		
-		//Hier Mikrofon auslesen und empfangene Daten an Analyse schicken
+		//read data and send to analyze
+		byte input = 0x00;				// Inputbyte
+		Queue<Byte> inputstream = null;	//Whenever input received 8 bit, store byte in queue
 		
-		
-		int input;
-		Byte[] xy = null;
-		input = I2S_RECEIVE.read();
-		
-		return xy;
+		while(true){
+			for(int bit =0; bit<8; bit++){
+				input = (byte) (input << I2S_RECEIVE.read());
+			}
+			
+			if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
+				inputstream.remove();
+			}
+			inputstream.add(input);
+			
+		}
+
 	}
 
 }
