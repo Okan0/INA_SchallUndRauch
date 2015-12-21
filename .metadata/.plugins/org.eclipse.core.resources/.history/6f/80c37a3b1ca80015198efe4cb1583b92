@@ -9,9 +9,6 @@ import mraa.mraa;
 //import upm
 public class I2SConnection {
 	
-	private static final int HIGH = 1;
-	private static final int LOW = 0;
-	
 	private static final int I2S_CLK = 13; 
 	private static final int I2S_RXD = 12; 
 	private static final int I2S_TXD = 11; 
@@ -22,8 +19,8 @@ public class I2SConnection {
 	private Gpio I2S_FREQUENCY;
 	private Gpio I2S_CLOCK;
 	
-	private static final int BUFFERSIZE_100MSEC = 10;		//Signallength in 100ms
-	private static final int BUFFERSIZE_BYTE = 3092 * 3 * BUFFERSIZE_100MSEC;	//Size of Bytearray for inputstream
+	private static final int BUFFERSIZE_10MSEC = 100;		//Signallength in 10ms
+	private static final int BUFFERSIZE_BYTE = 441 * 3 * BUFFERSIZE_10MSEC;	//Size of Bytearray for inputstream
 	
 	
 	public I2SConnection(){
@@ -70,36 +67,16 @@ public class I2SConnection {
 		byte input = 0x00;				// Inputbyte
 		Queue<Byte> inputstream = null;	//Whenever input received 8 bit, store byte in queue
 		
-		boolean word = false;
-		
-//		while(true){				
-//			I2S_FREQUENCY.write(HIGH);
-//				for(int bit =0; bit<8; bit++){
-//					input = (byte) (input << I2S_RECEIVE.read());
-//				}
-//			
-//				if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
-//					inputstream.remove();
-//				}
-//				inputstream.add(input);
-//		}
-		
 		while(true){
-			I2S_FREQUENCY.write(HIGH);
-			for(int i=0; i<8; i++){
-				I2S_CLOCK.write(LOW);
-				for(int bit =0; bit<8; bit++){
-					I2S_CLOCK.write(HIGH);
-					input = (byte) (input << I2S_RECEIVE.read());
-					I2S_CLOCK.write(LOW);
-				}
-				I2S_CLOCK.write(HIGH);
-				if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
-					inputstream.remove();
-				}
-				inputstream.add(input);
+			for(int bit =0; bit<8; bit++){
+				input = (byte) (input << I2S_RECEIVE.read());
 			}
-			I2S_FREQUENCY.write(LOW);
+			
+			if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
+				inputstream.remove();
+			}
+			inputstream.add(input);
+			
 		}
 
 	}

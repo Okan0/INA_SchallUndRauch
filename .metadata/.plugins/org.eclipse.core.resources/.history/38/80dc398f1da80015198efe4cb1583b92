@@ -22,8 +22,8 @@ public class I2SConnection {
 	private Gpio I2S_FREQUENCY;
 	private Gpio I2S_CLOCK;
 	
-	private static final int BUFFERSIZE_100MSEC = 10;		//Signallength in 100ms
-	private static final int BUFFERSIZE_BYTE = 3092 * 3 * BUFFERSIZE_100MSEC;	//Size of Bytearray for inputstream
+	private static final int BUFFERSIZE_10MSEC = 100;		//Signallength in 10ms
+	private static final int BUFFERSIZE_BYTE = 441 * 3 * BUFFERSIZE_10MSEC;	//Size of Bytearray for inputstream
 	
 	
 	public I2SConnection(){
