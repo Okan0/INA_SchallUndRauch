@@ -1,5 +1,6 @@
 package sebastian.connection;
 
+import java.util.LinkedList;
 import java.util.Queue;
 
 import mraa.Dir;
@@ -23,7 +24,7 @@ public class I2SConnection {
 	private Gpio I2S_CLOCK;
 	
 	private static final int BUFFERSIZE_100MSEC = 10;		//Signallength in 100ms
-	private static final int BUFFERSIZE_BYTE = 3092 * 3 * BUFFERSIZE_100MSEC;	//Size of Bytearray for inputstream
+	private static final int BUFFERSIZE_BYTE = 1 * 3 * BUFFERSIZE_100MSEC;	//Size of Bytearray for inputstream
 	
 	
 	public I2SConnection(){
@@ -45,11 +46,11 @@ public class I2SConnection {
 		
 		this.I2S_TRANSMIT = new Gpio(I2S_TXD);
 		this.I2S_TRANSMIT.mode(Mode.MODE_PULLUP);
-		this.I2S_TRANSMIT.dir(Dir.DIR_IN);
+		this.I2S_TRANSMIT.dir(Dir.DIR_OUT);
 		
 		this.I2S_FREQUENCY = new Gpio(I2S_FS);
 		this.I2S_FREQUENCY.mode(Mode.MODE_PULLUP);
-		this.I2S_FREQUENCY.dir(Dir.DIR_IN);
+		this.I2S_FREQUENCY.dir(Dir.DIR_OUT);
 		
 		this.I2S_CLOCK = new Gpio(I2S_CLK);
 		this.I2S_CLOCK.mode(Mode.MODE_PULLUP);
@@ -68,8 +69,8 @@ public class I2SConnection {
 		
 		//read data and send to analyze
 		byte input = 0x00;				// Inputbyte
-		Queue<Byte> inputstream = null;	//Whenever input received 8 bit, store byte in queue
-		
+		Queue<Byte> inputstream = new LinkedList<Byte>();	//Whenever input received 8 bit, store byte in queue
+		inputstream.add(input);
 		boolean word = false;
 		
 //		while(true){				
@@ -83,23 +84,30 @@ public class I2SConnection {
 //				}
 //				inputstream.add(input);
 //		}
-		
+		I2S_FREQUENCY.write(HIGH);
 		while(true){
-			I2S_FREQUENCY.write(HIGH);
+			I2S_TRANSMIT.write(HIGH);
 			for(int i=0; i<8; i++){
 				I2S_CLOCK.write(LOW);
-				for(int bit =0; bit<8; bit++){
-					I2S_CLOCK.write(HIGH);
-					input = (byte) (input << I2S_RECEIVE.read());
-					I2S_CLOCK.write(LOW);
+				for(int j=0; j<3; j++){
+					for(int bit =0; bit<8; bit++){
+						I2S_CLOCK.write(HIGH);
+						input = (byte) (input << (int) (Math.random()+0.5));
+						//input = (byte) (input << I2S_RECEIVE.read());
+						I2S_CLOCK.write(LOW);
+					}
+					if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
+						System.out.println("Buffer voll!");
+						inputstream.remove();
+					}
+					inputstream.add(input);
+					System.out.println(inputstream.toString());
 				}
 				I2S_CLOCK.write(HIGH);
-				if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
-					inputstream.remove();
-				}
-				inputstream.add(input);
+
 			}
-			I2S_FREQUENCY.write(LOW);
+			System.out.println("\n");
+			I2S_TRANSMIT.write(LOW);
 		}
 
 	}
