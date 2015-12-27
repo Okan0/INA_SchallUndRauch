@@ -68,8 +68,8 @@ public class I2SConnection {
 	public void read(){
 		
 		//read data and send to analyze
-		byte input = 0x00;				// Inputbyte
-		Queue<Byte> inputstream = new LinkedList<Byte>();	//Whenever input received 8 bit, store byte in queue
+		int input = 0x00;				// Inputbyte
+		Queue<Integer> inputstream = new LinkedList<Integer>();	//Whenever input received 8 bit, store byte in queue
 		inputstream.add(input);
 		boolean word = false;
 		
@@ -85,22 +85,24 @@ public class I2SConnection {
 //				inputstream.add(input);
 //		}
 		I2S_FREQUENCY.write(HIGH);
-		while(true){
+		for(int a = 0; a<2; a++){
+		//while(true){
 			I2S_TRANSMIT.write(HIGH);
 			for(int i=0; i<8; i++){
 				I2S_CLOCK.write(LOW);
 				for(int j=0; j<3; j++){
 					for(int bit =0; bit<8; bit++){
 						I2S_CLOCK.write(HIGH);
-						input = (byte) (input << (int) (Math.random()+0.5));
-						//input = (byte) (input << I2S_RECEIVE.read());
+						input =  (input << 1);
+						input = input + I2S_RECEIVE.read();
+						//input = (input + ((int)(Math.random() +0.5)));
 						I2S_CLOCK.write(LOW);
 					}
 					if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
-						System.out.println("Buffer voll!");
 						inputstream.remove();
 					}
 					inputstream.add(input);
+					input = 0;
 					System.out.println(inputstream.toString());
 				}
 				I2S_CLOCK.write(HIGH);
