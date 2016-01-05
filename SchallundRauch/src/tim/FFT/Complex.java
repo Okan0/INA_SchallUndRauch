@@ -2,16 +2,6 @@ package tim.FFT;
 
 import tim.FFT.Complex;
 
-/*************************************************************************
- *  Datei:        Complex.java
- *  Compilieren:  javac Complex.java
- *  Ausfuehren:   java Complex
- *
- *  Daten-Typen fuer komplexe Zahlen
- *  implementiert von Sebastian Fuchs
- *
- *************************************************************************/
-
 // Loesung von Blatt 3, Aufgabe 3(a)
 public class Complex
 {

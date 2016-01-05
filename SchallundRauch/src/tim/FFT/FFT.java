@@ -1,11 +1,8 @@
 package tim.FFT;
 
 import tim.FFT.Complex;
-// Java Implementierung der Fast Fourier Transformation
-// Braucht Complex.java aus der "Einfuehrung in der Rechnerbedienung"
-//    http://www.theorie.physik.uni-goettingen.de/~honecker/rb07/Complex.java
 
-// *** Die eigentliche FFT
+// ***
 // f[]: Eingabe: zu transformierende Daten
 //      Ausgabe: Ergebnis der Transformation
 // sign=-1: Hintransformation; sign=1: Ruecktransformation
