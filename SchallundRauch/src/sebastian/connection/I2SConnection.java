@@ -3,6 +3,8 @@ package sebastian.connection;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import tim.FFT.Complex;
+import tim.FFT.FFT;
 import mraa.Dir;
 import mraa.Gpio;
 import mraa.Mode;
@@ -23,9 +25,11 @@ public class I2SConnection {
 	private Gpio I2S_FREQUENCY;
 	private Gpio I2S_CLOCK;
 	
-	private static final int BUFFERSIZE_100MSEC = 10;		//Signallength in 100ms
-	private static final int BUFFERSIZE_BYTE = 1 * 3 * BUFFERSIZE_100MSEC;	//Size of Bytearray for inputstream
-	
+	private static final int RESOLUTION = 200;
+	private static final int BUFFERSIZE_MSEC = 500;		//Signallength in 100ms
+	private static final int BUFFERSIZE_BYTE = RESOLUTION * 3 * BUFFERSIZE_MSEC/1000;	//Size of Bytearray for inputstream
+	private static final int TIME_BETWEEN_ANALYSIS = 500; //Zeit in ms zwischen zwei analysen
+	private static final int READCYCLES_BETWEEN_ANALYSIS = RESOLUTION * TIME_BETWEEN_ANALYSIS/1000;	//Lesevorgänge bis zum abschicken an analyse, jeweils 3 Byte werden gelesen
 	
 	public I2SConnection(){
 		this.init();
@@ -73,29 +77,17 @@ public class I2SConnection {
 		inputstream.add(input);
 		boolean word = false;
 		
-//		while(true){				
-//			I2S_FREQUENCY.write(HIGH);
-//				for(int bit =0; bit<8; bit++){
-//					input = (byte) (input << I2S_RECEIVE.read());
-//				}
-//			
-//				if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
-//					inputstream.remove();
-//				}
-//				inputstream.add(input);
-//		}
 		I2S_FREQUENCY.write(HIGH);
-		for(int a = 0; a<2; a++){
-		//while(true){
+//		while(true){
 			I2S_TRANSMIT.write(HIGH);
-			for(int i=0; i<8; i++){
+			for(int i=0; i<READCYCLES_BETWEEN_ANALYSIS; i++){ //Schleife bis einmal Analyse aufgerufen wird
 				I2S_CLOCK.write(LOW);
-				for(int j=0; j<3; j++){
-					for(int bit =0; bit<8; bit++){
+				for(int j=0; j<3; j++){ //Schleife für 3 Byte
+					for(int bit =0; bit<8; bit++){ //Schleife für 8 bit
 						I2S_CLOCK.write(HIGH);
 						input =  (input << 1);
-						input = input + I2S_RECEIVE.read();
-						//input = (input + ((int)(Math.random() +0.5)));
+						//input = input + I2S_RECEIVE.read();
+						input = (input + ((int)(Math.random() +0.5)));
 						I2S_CLOCK.write(LOW);
 					}
 					if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
@@ -110,8 +102,12 @@ public class I2SConnection {
 			}
 			System.out.println("\n");
 			I2S_TRANSMIT.write(LOW);
+			//send to FFT
+			
+			FFT.FFT((Complex[]) inputstream.toArray(), -1);
+			
 		}
 
-	}
+//	}
 
 }

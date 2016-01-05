@@ -3,4 +3,6 @@
 <fullyQualifiedTypeName name="sebastian.connection.I2SConnection"/>
 <fullyQualifiedTypeName name="java.util.LinkedList"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="tim.FFT.FFT"/>
+<fullyQualifiedTypeName name="tim.FFT.Complex"/>
 </qualifiedTypeNameHistroy>
