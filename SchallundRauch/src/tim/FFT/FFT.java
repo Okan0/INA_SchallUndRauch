@@ -11,10 +11,19 @@ public class FFT {
 public static void FFT(Complex[] f, int sign) {
   int N=f.length;       // Java-Arrays kennen ihre Laenge
   int mask;
+  
   // *** Teste, ob N 2er-Potenz ist
   for(mask=1; mask<N; mask <<= 1)       ;
   if(mask != N)
-    throw new RuntimeException("N = " + " ist keine 2er-Potenz !");
+  {
+	Complex[] temp = new Complex[mask];
+    System.arraycopy(f, 0, temp, 0, N);
+    for(;N<mask;N++)
+    {
+    	temp[N] = new Complex(0);
+    }
+    f = temp;
+  }
   // *** Teile Daten durch sqrt(N)
   double isqrtN = 1/Math.sqrt(N);
   for(int r=0; r<N; r++)
@@ -48,25 +57,5 @@ public static void FFT(Complex[] f, int sign) {
       }
      no2 = n;
    }
- }
-
-////////////////////////////// Test-Teil
-
-// Hauptprogramm
-
-public static void main(String[] args) {
-  double[] Daten = {1, 2, 3, 4, 3, 2, 1, Math.PI};
-  int N=Daten.length;           // Java-Arrays kennen ihre Laenge
-  Complex[] f = new Complex[N];
-
-  for(int r=0; r<N; r++)
-    f[r] = new Complex(Daten[r], 0);
-  FFT(f, -1);                   // Hintransformation
-  for(int r=0; r<N; r++)
-    System.out.println("^f[" + r + "] = " + f[r]);
-  FFT(f, 1);                    // Rueckransformation
-  for(int r=0; r<N; r++)
-    System.out.println("f[" + r + "] = " + f[r]
-         + "\tOriginaldaten: " + Daten[r]);
  }
 }
