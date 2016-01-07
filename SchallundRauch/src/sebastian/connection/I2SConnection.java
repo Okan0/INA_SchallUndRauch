@@ -74,21 +74,17 @@ public class I2SConnection {
 		//read data and send to analyze
 		int input = 0x00;				// Inputbyte
 		Queue<Integer> inputstream = new LinkedList<Integer>();	//Whenever input received 8 bit, store byte in queue
-		inputstream.add(input);
-		boolean word = false;
+		inputstream.add(input);		
 		
 		I2S_FREQUENCY.write(HIGH);
-//		while(true){
+		while(true){
 			I2S_TRANSMIT.write(HIGH);
 			for(int i=0; i<READCYCLES_BETWEEN_ANALYSIS; i++){ //Schleife bis einmal Analyse aufgerufen wird
-				I2S_CLOCK.write(LOW);
 				for(int j=0; j<3; j++){ //Schleife für 3 Byte
 					for(int bit =0; bit<8; bit++){ //Schleife für 8 bit
-						I2S_CLOCK.write(HIGH);
-						input =  (input << 1);
+						input = input << 1;
 						//input = input + I2S_RECEIVE.read();
 						input = (input + ((int)(Math.random() +0.5)));
-						I2S_CLOCK.write(LOW);
 					}
 					if(inputstream.size() > BUFFERSIZE_BYTE){ 		//if queue has max_length, remove first byte
 						inputstream.remove();
@@ -97,17 +93,14 @@ public class I2SConnection {
 					input = 0;
 					System.out.println(inputstream.toString());
 				}
-				I2S_CLOCK.write(HIGH);
 
 			}
 			System.out.println("\n");
 			I2S_TRANSMIT.write(LOW);
 			//send to FFT
 			
-			FFT.FFT((Complex[]) inputstream.toArray(), -1);
-			
+			//FFT.FFT((Complex[]) inputstream.toArray(), -1);
+		
 		}
-
-//	}
-
+	}
 }
