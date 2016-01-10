@@ -5,4 +5,10 @@
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="tim.FFT.FFT"/>
 <fullyQualifiedTypeName name="tim.FFT.Complex"/>
+<fullyQualifiedTypeName name="java.util.Collection"/>
+<fullyQualifiedTypeName name="com.sun.javafx.geom.AreaOp.AddOp"/>
+<fullyQualifiedTypeName name="mraa.Spi"/>
+<fullyQualifiedTypeName name="mraa.Spi_Mode"/>
+<fullyQualifiedTypeName name="mraa.IsrCallback"/>
+<fullyQualifiedTypeName name="mraa.Edge"/>
 </qualifiedTypeNameHistroy>
