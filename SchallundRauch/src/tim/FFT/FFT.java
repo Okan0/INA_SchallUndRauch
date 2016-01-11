@@ -12,13 +12,16 @@ public static void FFT(Complex[] f, int sign) {
   int N=f.length;       // Java-Arrays kennen ihre Laenge
   int mask;
   // *** Teste, ob N 2er-Potenz ist
-  for(mask=1; mask<N; mask <<= 1)       ;
+  for(mask=1; mask<N; mask <<= 1);
   if(mask != N)
     throw new RuntimeException("N = " + " ist keine 2er-Potenz !");
+  
   // *** Teile Daten durch sqrt(N)
   double isqrtN = 1/Math.sqrt(N);
+  
   for(int r=0; r<N; r++)
     f[r] = f[r].times(isqrtN);
+  
   // *** Bit-Umkehr
   for(int t=0, r=0; r<N; r++) {
      if(t > r) {        // Vertausche f[r] und f[t]

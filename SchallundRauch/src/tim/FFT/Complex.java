@@ -93,40 +93,5 @@ public class Complex
     {
 	return new Complex(re, -im);
     }
-	
-//    public static void main(String[] args)
-//    {
-//        Complex a = new Complex(5.0, 6.0);
-//        Complex b = new Complex(-3.0, 4.0);
-//
-//        System.out.println("a            = " + a);
-//        System.out.println("b            = " + b);
-//        System.out.println("Real(a)      = " + a.Real());
-//        System.out.println("Imag(a)      = " + a.Imag());
-//        System.out.println("a + b        = " + a.plus(b));
-//        System.out.println("a - b        = " + a.minus(b));
-//        System.out.println("a * b        = " + a.times(b));
-//        System.out.println("a * E        = " + a.times(Math.E));
-//        System.out.println("b * a        = " + b.times(a));
-//        System.out.println("b / a        = " + b.divide(a));
-//        System.out.println("b / Pi       = " + b.divide(Math.PI));
-//        System.out.println("(b / a) * a  = " + b.divide(a).times(a));
-//        System.out.println("b^*          = " + b.conjugate());
-//        System.out.println("|b|          = " + b.abs());
-// 
-//        // Loesung von Blatt 3, Aufgabe 3(b)
-//		Complex c = new Complex(0.23, -.999);
-//		Complex d = new Complex(0.1, -1.8);
-//		Complex e = new Complex(3.5);
-//		System.out.println("*** Loesung von Blatt 3, Aufgabe 3(b):");
-//		System.out.println("a = " + a);
-//		System.out.println("b = " + b);
-//		System.out.println("c = " + c);
-//		System.out.println("d = " + d);
-//		System.out.println("e = " + e);
-//		Complex res = a.plus(b.times(c)).conjugate().divide(d).minus(e);
-//		System.out.println("Ergebnis = " + res);
-//
-//    }
 
 }
