@@ -29,6 +29,20 @@ public class TransformForwardThread extends Thread {
 			i+=2;
 		}
 		transform.complexForward(temp);
+		
+		//Resultierende Frequenzen gegen Datenbank abfragen:
+		////////////////////////////////////////////////////
+		//Für jede einzelne Frequenz:
+		//	Frequenz an eine Funktion übergeben, welche folgendes macht:
+		//		Prozentuales Offset der Frequenz berechnen
+		//		Folgende Datenbank abfrage verwenden:
+		//			"SELECT * FROM tbl_frequencies hz WHERE hz.frequency <= " 
+		//			+ freq.toString() + " AND hz.frequency >= "
+		//			+ (freq - offset).toString() + ";"
+		//		Überprüfen ob die Abfrage einen treffer hat
+		//		Ja	 -> LED aufleuchten lassen(externe Funktion)
+		//		Nein -> /
+		
 		/*
 		 * Im folgenden, wird das Ergebnis, welches nun in "temp" gespeichert ist, weiter verarbeitet
 		 * */
