@@ -13,7 +13,7 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ALLOW_TERMINATE" value="true"/>
 <mapAttribute key="org.eclipse.jdt.launching.CONNECT_MAP">
 <mapEntry key="hostname" value="192.168.2.15"/>
-<mapEntry key="port" value="8004"/>
+<mapEntry key="port" value="8000"/>
 <mapEntry key="timeout" value="2000"/>
 </mapAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="SchallundRauch"/>

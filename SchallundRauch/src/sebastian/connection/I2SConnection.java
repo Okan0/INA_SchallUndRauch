@@ -10,6 +10,7 @@ import mraa.Gpio;
 import mraa.IsrCallback;
 import mraa.Mode;
 import mraa.Spi;
+import mraa.Spi_Mode;
 import mraa.mraa;
 //import upm
 public class I2SConnection {
@@ -36,7 +37,7 @@ public class I2SConnection {
 	*/
 	
 	
-	private static final int RESOLUTION = 44100 * 8;	//44,1kHz * 8 Byte Wordlength
+	private static final int RESOLUTION = 44 * 8;	//44,1kHz * 8 Byte (64Bit)Wordlength
 	private static final int BUFFERSIZE_MSEC = 2000;	//Signallength in 100ms
 	
 	//es werden immer 4 Byte in einem Integer gespeichert, daher RESOLUTION/4
@@ -45,9 +46,9 @@ public class I2SConnection {
 	private static final int TIME_BETWEEN_ANALYSIS = 500; //Zeit in ms zwischen zwei analysen
 	private static final int READCYCLES_BETWEEN_ANALYSIS = RESOLUTION * TIME_BETWEEN_ANALYSIS/1000;	//Lesevorgänge bis zum abschicken an analyse, jeweils 3 Byte werden gelesen
 	
-	public Queue<Integer> inputstream = new LinkedList<Integer>();	//Whenever input received 8 bit, store byte in queue
+	public Queue<Long> inputstream = new LinkedList<Long>();	//Whenever input received 8 bit, store byte in queue
 	public int count = 0;
-	public int input = 0x00;				// Input
+	public Long input = (long) 0x00;				// Input
 	public int WORD_TRIGGER = 0;
 	
 	public I2SConnection(){
@@ -63,7 +64,6 @@ public class I2SConnection {
 			                    + "Dynamic Linking Problems in the SWIG Java documentation for help.\n" + e);
 		}
 				
-		
 		this.I2S_RECEIVE = new Gpio(I2S_RXD);
 		this.I2S_RECEIVE.mode(Mode.MODE_PULLUP);
 		this.I2S_RECEIVE.dir(Dir.DIR_IN);
@@ -87,91 +87,94 @@ public class I2SConnection {
 		System.out.println("\t...Receive Data Pin: " + mraa.getPinName(I2S_RXD));
 		System.out.println("\t...Transmit Data Pin: " + mraa.getPinName(I2S_TXD));
 		System.out.println("\t...Frequency Select Pin: " + mraa.getPinName(I2S_FS));
-		System.out.println("... done!");
-			
+		System.out.println("... done!");	
+		
 		
 		//set clock speed
 		Spi spi = new Spi(I2S_CLK);
-		spi.frequency(RESOLUTION*8);
+		spi.frequency(RESOLUTION*8);	//Resolution ist in byte angegeben, aus byte bit machen
 		spi.bitPerWord(64);
 		spi.lsbmode(false);
+		
+		//set wordselectspeed = clockspeed/64
+		Spi wordselect = new Spi(I2S_FS);
+		wordselect.frequency(RESOLUTION/8);	//Wordclock auf ein 64tel der CLK 
 	}
-	
-	
-	public void read(){
-		System.out.println("read()");
-		IsrCallback callback = new ClockCallback();
-		
-		while(true){
-			I2S_CLOCK.isr(Edge.EDGE_RISING,  callback);
-		}
-	}
-	
-	
-public class ClockCallback extends IsrCallback
-{
-	public ClockCallback(){
-		super();
-		System.out.println("Callback erstellt");
-	}
-	
-	public void run(){
-		
-		count++;
-		
-		if(count < 32){
-			input = input << 1;
-			input += (int) (Math.random() + 0.5);
-			// input = I2S_RECEIVE.read();
-		}
-		if(count == 31){
-			if(inputstream.size() >= BUFFERSIZE_INTEGER){
-				inputstream.remove();
-			}
-			inputstream.add(input);
-			input = 0;
-			count = 0;
-			WORD_TRIGGER = 1-WORD_TRIGGER;
-			I2S_FREQUENCY.write(WORD_TRIGGER);
-			
-			System.out.println(inputstream.toString());
-		}
-		
-		
+//	
+//	public void read(){
+//		IsrCallback callback = new ClockCallback();
+//		
 //		while(true){
-//			I2S_TRANSMIT.write(HIGH);
-//			for(int i=0; i<READCYCLES_BETWEEN_ANALYSIS; i++){ //Schleife bis einmal Analyse aufgerufen wird
-//				for(int word=0; word<2; word++){ //ein wort is 64 (2*32) Bit lang
-//					//4 Bytes hintereinander in einen Integer
-//					//MSB first
-//					for(int bit =0; bit<32; bit++){ //Schleife für 32 bit,
-//						input = input << 1;
-//						//input = input + I2S_RECEIVE.read();
-//						input = (input + ((int)(Math.random() +0.5)));
-//					}//end bit
-//					if(inputstream.size() > BUFFERSIZE_INTEGER){ 		//if queue has max_length, remove first byte
-//						inputstream.remove();
-//					}
-//					inputstream.add(input);
-//					input = 0;
-//					System.out.println(inputstream.toString());
-//				
-//				//wordselect setzen
-//				
-//				}// end word
-//
-//			}
-//			System.out.println("\n");
-//			I2S_TRANSMIT.write(LOW);
-//			
-//			//remove 0x00 Bytes before sending to analysis
-//			Queue<Integer> sendToAnalysis = inputstream;
-//			ArrayList<Integer> zero = new ArrayList<Integer>(1);
-//			zero.add(0);
-//			sendToAnalysis.removeAll(zero);
-//			
-//			//send to FFT
+//			I2S_CLOCK.isr(Edge.EDGE_RISING,  callback);
 //		}
+//	}
+//	
+//	
+//public class ClockCallback extends IsrCallback
+//{
+//	public ClockCallback(){
+//		super();
+//		System.out.println("Callback erstellt");
+//	}
+//	
+//	public void run(){
+//		
+//		count++;
+//		System.out.println(count);
+//		if(count < 32){
+//			input = input << 1;
+//			input += (int) (Math.random() + 0.5);
+//			// input = I2S_RECEIVE.read();
+//		}
+//		if(count == 31){
+//			if(inputstream.size() >= BUFFERSIZE_INTEGER){
+//				inputstream.remove();
+//			}
+//			inputstream.add(input);
+//			input = 0;
+//			count = 0;
+//			WORD_TRIGGER = 1-WORD_TRIGGER;
+//			I2S_FREQUENCY.write(WORD_TRIGGER);
+//		}
+//		
+		
+	public void read(){
+		while(true){
+			I2S_TRANSMIT.write(HIGH);
+			for(int i=0; i<READCYCLES_BETWEEN_ANALYSIS; i++){ //Schleife bis einmal Analyse aufgerufen wird
+				for(int word=0; word<2; word++){ //ein wort is 64 (2*32) Bit lang
+					//4 Bytes hintereinander in einen Integer
+					//MSB first
+					for(int bit =0; bit<32; bit++){ //Schleife für 32 bit,
+						input = input << 1;
+						//input = input + I2S_RECEIVE.read();
+						if(bit<24){
+							input = (input + ((int)(Math.random() +0.5)));
+						}
+					}//end bit
+					if(inputstream.size() > BUFFERSIZE_INTEGER){ 		//if queue has max_length, remove first byte
+						inputstream.remove();
+					}
+					inputstream.add(input);
+					input = (long) 0;
+					System.out.printf("0x%x\n",inputstream.toArray()[0]);
+					System.out.println(inputstream.toString());
+				
+				//wordselect setzen
+				
+				}// end word
+
+			}
+			System.out.println("\n");
+			I2S_TRANSMIT.write(LOW);
+			
+			//remove 0x00 Bytes before sending to analysis
+			Queue<Long> sendToAnalysis = inputstream;
+			ArrayList<Integer> zero = new ArrayList<Integer>(1);
+			zero.add(0);
+			sendToAnalysis.removeAll(zero);
+			
+			//send to FFT
 		}
 	}
 }
