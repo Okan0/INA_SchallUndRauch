@@ -4,6 +4,8 @@ import java.util.Queue;
 
 import org.jtransforms.fft.DoubleFFT_1D;
 
+import pl.edu.icm.jlargearrays.DoubleLargeArray;
+
 public class TransformForwardThread extends Thread {
 	Queue<Integer> stream;
 	public TransformForwardThread(Queue<Integer> stream)
@@ -13,22 +15,50 @@ public class TransformForwardThread extends Thread {
 	}
 	public void run()
 	{
+		System.out.println("done");
 		/*
 		 * Im folgenden wird die Library "JTransform" verwendet, um die Fast Fourier Transformation(FFT)
 		 * auszuführen. Da hierfür ein Real und ein Immaginär-Teil benötigt wird, wir aber nur einen
 		 * Realteil verwenden, wird ein double Array der doppelten Länge erstellt und die Imaginär-Teil immer
 		 * 0 gesetzt.
 		 * */
+		System.out.print("Initialize...");
 		double[] temp = new double[stream.size()*2];
 		int i=0;
-		DoubleFFT_1D transform = new DoubleFFT_1D(temp.length);
+		DoubleFFT_1D transform = new DoubleFFT_1D(temp.length/2);
 		for(Integer v : stream)
 		{
 			temp[i] = v;
 			temp[i+1] = 0.0;
 			i+=2;
 		}
-		transform.complexForward(temp);
+		System.out.println("done");
+		
+		System.out.print("Start Transformation...");
+		try
+		{
+			transform.complexForward(temp);
+			System.out.println("done");
+			System.out.println("");
+			System.out.println("Array:");
+			for(i=0;i<temp.length;i++)
+			{
+				//sb.append(((Double)temp[i]).toString() + ";");
+				
+				System.out.print(((Double)temp[i]).toString() + (i%2==1?" j":";***;"));
+				if(i%20 == 0)
+				{
+					System.out.println("");
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Failed");
+			System.out.println("Exception: ");
+			e.printStackTrace();
+		}
+		
 		
 		//Resultierende Frequenzen gegen Datenbank abfragen:
 		////////////////////////////////////////////////////
@@ -42,15 +72,5 @@ public class TransformForwardThread extends Thread {
 		//		Überprüfen ob die Abfrage einen treffer hat
 		//		Ja	 -> LED aufleuchten lassen(externe Funktion)
 		//		Nein -> /
-		
-		/*
-		 * Im folgenden, wird das Ergebnis, welches nun in "temp" gespeichert ist, weiter verarbeitet
-		 * */
-		String retValue = "";
-		
-		for(i=0;i<temp.length;i+=2)
-		{
-			retValue+=((Double)temp[i]).toString() + ";";
-		}
 	}
 }

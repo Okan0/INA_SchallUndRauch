@@ -7,6 +7,7 @@ import org.jtransforms.fft.DoubleFFT_1D;
 public class FFT_Wrapper {
 	public static void transoform(Queue<Integer> stream)
 	{
+		System.out.print("Start Thread...");
 		TransformForwardThread tft = new TransformForwardThread(stream);
 		tft.start();
 	}
