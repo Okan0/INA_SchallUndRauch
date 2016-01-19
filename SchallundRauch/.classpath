@@ -4,5 +4,7 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Sebastian/Documents/GitHub/INA_SchallUndRauch/SchallundRauch/src/mraa.jar"/>
 	<classpathentry kind="lib" path="src/mraa.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Sebastian/Documents/GitHub/INA_SchallUndRauch/SchallundRauch/src/JTransforms-3.1-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="src/JTransforms-3.1-with-dependencies.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

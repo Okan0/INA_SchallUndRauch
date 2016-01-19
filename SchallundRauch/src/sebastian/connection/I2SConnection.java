@@ -3,6 +3,7 @@ package sebastian.connection;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import tim.FFT.FFT_Wrapper;
 
 import mraa.Dir;
 import mraa.Edge;
@@ -43,7 +44,7 @@ public class I2SConnection {
 	//es werden immer 4 Byte in einem Integer gespeichert, daher RESOLUTION/4
 	
 	private static final int BUFFERSIZE_INTEGER = RESOLUTION/4 * BUFFERSIZE_MSEC/1000;	//Size of Queue<Integer> for inputstream
-	private static final int TIME_BETWEEN_ANALYSIS = 500; //Zeit in ms zwischen zwei analysen
+	private static final int TIME_BETWEEN_ANALYSIS = 2000; //Zeit in ms zwischen zwei analysen
 	private static final int READCYCLES_BETWEEN_ANALYSIS = RESOLUTION * TIME_BETWEEN_ANALYSIS/1000;	//Lesevorgänge bis zum abschicken an analyse, jeweils 3 Byte werden gelesen
 	
 	public Queue<Long> inputstream = new LinkedList<Long>();	//Whenever input received 8 bit, store byte in queue
@@ -157,15 +158,15 @@ public class I2SConnection {
 					}
 					inputstream.add(input);
 					input = (long) 0;
-					System.out.printf("0x%x\n",inputstream.toArray()[0]);
-					System.out.println(inputstream.toString());
+//					System.out.printf("0x%x\n",inputstream.toArray()[0]);
+//					System.out.println(inputstream.toString());
 				
 				//wordselect setzen
 				
 				}// end word
 
 			}
-			System.out.println("\n");
+//			System.out.println("\n");
 			I2S_TRANSMIT.write(LOW);
 			
 			//remove 0x00 Bytes before sending to analysis
@@ -175,6 +176,7 @@ public class I2SConnection {
 			sendToAnalysis.removeAll(zero);
 			
 			//send to FFT
+			FFT_Wrapper.transform(sendToAnalysis);
 		}
 	}
 }
