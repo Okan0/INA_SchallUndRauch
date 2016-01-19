@@ -7,8 +7,8 @@ import org.jtransforms.fft.DoubleFFT_1D;
 import pl.edu.icm.jlargearrays.DoubleLargeArray;
 
 public class TransformForwardThread extends Thread {
-	Queue<Integer> stream;
-	public TransformForwardThread(Queue<Integer> stream)
+	Queue<Long> stream;
+	public TransformForwardThread(Queue<Long> stream)
 	{
 		super();
 		this.stream = stream;
@@ -26,7 +26,7 @@ public class TransformForwardThread extends Thread {
 		double[] temp = new double[stream.size()*2];
 		int i=0;
 		DoubleFFT_1D transform = new DoubleFFT_1D(temp.length/2);
-		for(Integer v : stream)
+		for(Long v : stream)
 		{
 			temp[i] = v;
 			temp[i+1] = 0.0;
@@ -59,7 +59,12 @@ public class TransformForwardThread extends Thread {
 			e.printStackTrace();
 		}
 		
-		
+		for(double v : temp)
+		{
+			double offset0 = v*0.05;
+			double offset1 = v*0.01;
+			//TODO Offsets und Wert an Johnny übergeben
+		}
 		//Resultierende Frequenzen gegen Datenbank abfragen:
 		////////////////////////////////////////////////////
 		//Für jede einzelne Frequenz:
