@@ -12,6 +12,7 @@ import com.mongodb.BulkWriteResult;
 import com.mongodb.Cursor;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.ParallelScanOptions;
 
@@ -48,7 +49,46 @@ public class ServerConnection {
 			System.out.println("Ein Dokument ist vorhanden.");
 		
 	}
-	public void safe(String str)
+	public void find(int offsetUpper,int offsetLower, double value)
+	{
+		if(value<0)
+		{
+			
+		}
+		MongoClient mongoClient = null;
+		try {
+			// connect to the local database server
+			mongoClient = new MongoClient();
+		} catch (UnknownHostException e) {
+			System.out.println("Verbindung Fehlgeschlagen");
+			e.printStackTrace();
+		}
+		// get handle to "Schall&Rauch"
+		DB db = mongoClient.getDB("Schall&Rauch");
+		// get a collection object to work with
+		DBCollection coll = db.getCollection("SoundCollection");
+		
+		BasicDBObject oU = new BasicDBObject();
+		oU.put("offsetUpper", offsetUpper);
+		BasicDBObject oL = new BasicDBObject();
+		oL.put("offsetLower", offsetLower);
+		BasicDBObject v = new BasicDBObject();
+		v.put("value", value);
+		  
+		DBCursor cursor = coll.find(oU, oL);
+		if(cursor.hasNext())
+			System.out.println("Element gefunden: ");
+		while (cursor.hasNext()) {
+		      System.out.println(cursor.next());
+		}
+		//Folgende Datenbank abfrage verwenden:
+			//			"SELECT * FROM tbl_frequencies hz WHERE hz.frequency <= " 
+			//			+ (freq + offset).toString() + " AND hz.frequency >= "
+			//			+ (freq - offset).toString() + ";"
+		
+		mongoClient.close();
+	}
+	public void find(String data)
 	{
 		MongoClient mongoClient = null;
 		try {
@@ -63,7 +103,34 @@ public class ServerConnection {
 		// get a collection object to work with
 		DBCollection coll = db.getCollection("SoundCollection");
 		
-		coll.insert(new BasicDBObject().append("data", str));
+		BasicDBObject b = new BasicDBObject();
+		b.put("data", data);
+		
+		DBCursor cursor = coll.find(b);
+		if(cursor.hasNext())
+			System.out.println("Element gefunden: ");
+		while (cursor.hasNext()) {
+		      System.out.println(cursor.next());
+		}
+		System.out.println();
+		mongoClient.close();
+	}
+	public void safe(String data)
+	{
+		MongoClient mongoClient = null;
+		try {
+			// connect to the local database server
+			mongoClient = new MongoClient();
+		} catch (UnknownHostException e) {
+			System.out.println("Verbindung Fehlgeschlagen");
+			e.printStackTrace();
+		}
+		// get handle to "Schall&Rauch"
+		DB db = mongoClient.getDB("Schall&Rauch");
+		// get a collection object to work with
+		DBCollection coll = db.getCollection("SoundCollection");
+		
+		coll.insert(new BasicDBObject().append("data", data));
 		mongoClient.close();
 	}
 	public void update(long id, String newData)
@@ -81,7 +148,7 @@ public class ServerConnection {
 		// get a collection object to work with
 		DBCollection coll = db.getCollection("SoundCollection");
 		
-		// Datenzeile Löschen
+		// Datenzeile LÃ¶schen
 		BulkWriteOperation builder = coll.initializeOrderedBulkOperation();
 		BulkWriteResult result;
 		builder.find(new BasicDBObject("data", 2)).updateOne(new BasicDBObject("$set", new BasicDBObject("data", newData)));
@@ -103,7 +170,30 @@ public class ServerConnection {
 		// get a collection object to work with
 		DBCollection coll = db.getCollection("SoundCollection");
 		
-		// Datenzeile Löschen
+		// Datenzeile LÃ¶schen
+		BulkWriteOperation builder = coll.initializeOrderedBulkOperation();
+		BulkWriteResult result;
+		builder.find(new BasicDBObject("data", data)).removeOne();;
+		result = builder.execute();
+		
+		mongoClient.close();
+	}
+	public void delete(String data)
+	{
+		MongoClient mongoClient = null;
+		try {
+			// connect to the local database server
+			mongoClient = new MongoClient();
+		} catch (UnknownHostException e) {
+			System.out.println("Verbindung Fehlgeschlagen");
+			e.printStackTrace();
+		}
+		// get handle to "Schall&Rauch"
+		DB db = mongoClient.getDB("Schall&Rauch");
+		// get a collection object to work with
+		DBCollection coll = db.getCollection("SoundCollection");
+		
+		// Datenzeile LÃ¶schen
 		BulkWriteOperation builder = coll.initializeOrderedBulkOperation();
 		BulkWriteResult result;
 		builder.find(new BasicDBObject("data", data)).removeOne();;
@@ -216,8 +306,10 @@ public class ServerConnection {
     
     sc.update(2, "hallo");
     sc.delete(3);
-	
+    
     sc.print();
+    
+    sc.find("hallo");
 }
 // CHECKSTYLE:ON
 }
